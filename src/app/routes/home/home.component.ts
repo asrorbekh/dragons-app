@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {NgOptimizedImage} from "@angular/common";
+import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {DragonTreasureService} from "../../services/dragons/dragon-treasure.service";
 import {DragonTreasure} from "../../interfaces/dragons/dragon-treasure";
 
@@ -7,7 +7,9 @@ import {DragonTreasure} from "../../interfaces/dragons/dragon-treasure";
   selector: 'app-home',
   standalone: true,
   imports: [
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgForOf,
+    NgIf
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -15,6 +17,8 @@ import {DragonTreasure} from "../../interfaces/dragons/dragon-treasure";
 export class HomeComponent implements OnInit {
   private movieService = inject(DragonTreasureService);
 
+  errorMessage: string|boolean = false;
+  isLoading: boolean = false;
   dragonTreasures: DragonTreasure[] = [];
 
   ngOnInit(): void {
@@ -22,6 +26,8 @@ export class HomeComponent implements OnInit {
   }
 
   loadDragonTreasure() {
+    this.isLoading = true;
+
     this.movieService.getDragonTreasures().subscribe({
       next: (response: any) => {
         if (response.hasOwnProperty('hydra:member')) {
@@ -29,12 +35,17 @@ export class HomeComponent implements OnInit {
         } else if (Array.isArray(response)) {
           this.dragonTreasures = response as DragonTreasure[];
         } else {
-          window.location.href = '/error'
+          this.errorMessage = 'Invalid response format';
         }
+        this.isLoading = false;
       },
       error: (error) => {
-        console.log('Error: ' + error);
-      }
+        this.errorMessage = error.statusText || 'An error occurred';
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+     }
     });
   }
 }
