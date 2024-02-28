@@ -6,24 +6,19 @@
     </div>
   </div>
 
-  @if (loading$ | async; as loading) {
-    @if (loading){
+    @if (isLoading){
       <div class="align-content-center">
         Loading...
       </div>
     }
-  }
 
-  @if (error$ | async; as error) {
-    @if (error.message){
+    @if (errorMessage){
       <div class="align-content-center">
-        {{ error.statusText || 'An error occurred' }}
+        {{ errorMessage }}
       </div>
     }
-  }
 
   <div class="my-3 p-3 bg-body rounded shadow-sm">
-    @if (treasures$ | async;as dragonTreasures) {
       @if (dragonTreasures.length > 0){
         <h6 class="border-bottom pb-2 mb-0">Recent treasures</h6>
         @for (dragonTreasure of dragonTreasures; track dragonTreasure.id) {
@@ -44,11 +39,10 @@
         <small class="d-block text-end mt-3">
           <a routerLink="/home">All updates</a>
         </small>
-      }@else if (dragonTreasures.length === 0) {
+      }@else if (dragonTreasures.length === 0 && !errorMessage && !isLoading) {
         <div class="align-content-center">
           No data available.
         </div>
       }
-    }
   </div>
 </main>

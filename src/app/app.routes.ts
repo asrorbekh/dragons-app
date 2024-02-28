@@ -5,6 +5,7 @@ import {FaqComponent} from "./routes/faq/faq.component";
 import {AboutComponent} from "./routes/about/about.component";
 import {DragonsComponent} from "./routes/dragons/dragons.component";
 import {DragonsTreasuresComponent} from "./routes/dragons-treasures/dragons-treasures.component";
+import {DragonsTreasuresHttpComponent} from "./routes/dragons-treasures-http/dragons-treasures-http.component";
 
 
 export const routes: Routes = [
@@ -27,6 +28,7 @@ export const routes: Routes = [
   {
     path: 'dragons', children: [
       {path: 'treasures', title: 'Dragons | Treasures', component: DragonsTreasuresComponent},
+      {path: 'treasures-http', title: 'Dragons | Treasures Http', component: DragonsTreasuresHttpComponent},
     ]
   },
   {path: '', redirectTo: '/home', pathMatch: 'full'},

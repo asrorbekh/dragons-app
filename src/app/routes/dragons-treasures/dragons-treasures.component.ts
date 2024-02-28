@@ -2,51 +2,40 @@ import {Component, inject, OnInit} from '@angular/core';
 import {DragonTreasureService} from "../../services/dragons/dragon-treasure.service";
 import {DragonTreasure} from "../../interfaces/dragons/dragon-treasure";
 import {RouterLink} from "@angular/router";
+import {Observable} from "rxjs";
+import {
+  selectDragonTreasureError,
+  selectDragonTreasureLoading,
+  selectDragonTreasures
+} from "../../store/dragons/dragon-treasure.selectors";
+import {Store} from "@ngrx/store";
+import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-dragons-treasures',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    AsyncPipe,
+    NgIf,
+    NgForOf
   ],
   templateUrl: './dragons-treasures.component.html',
   styleUrl: './dragons-treasures.component.css'
 })
 export class DragonsTreasuresComponent implements OnInit {
-  private dragonTreasureService = inject(DragonTreasureService);
+  title: string = 'Dragon store treasures';
 
-  errorMessage: string|boolean = false;
-  isLoading: boolean = false;
-  dragonTreasures: DragonTreasure[] = [];
-  totalTreasures: number = 0;
-  title: string = '';
+  treasures$: Observable<DragonTreasure[]> = this.store.select(selectDragonTreasures);
+  loading$: Observable<boolean> = this.store.select(selectDragonTreasureLoading);
+  error$: Observable<any> = this.store.select(selectDragonTreasureError);
+  public totalTreasures: number = 0;
 
-  ngOnInit(): void {
-    this.loadDragonTreasure();
-  }
+  constructor(private dragonTreasureService: DragonTreasureService, private store: Store) {}
 
-  loadDragonTreasure() {
-    this.isLoading = true;
-
-    this.dragonTreasureService.getDragonTreasures().subscribe({
-      next: (response: any) => {
-        if (response.hasOwnProperty('hydra:member')) {
-          this.dragonTreasures = response['hydra:member'] as DragonTreasure[];
-          this.totalTreasures = this.dragonTreasures?.length;
-        } else if (Array.isArray(response)) {
-          this.dragonTreasures = response as DragonTreasure[];
-        } else {
-          this.errorMessage = 'Invalid response format';
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.errorMessage = error.statusText || 'An error occurred';
-        this.isLoading = false;
-      },
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+  ngOnInit() {
+    this.dragonTreasureService.getDragonTreasuresStore().subscribe(
+      treasures => this.totalTreasures = treasures.length
+    );
   }
 }

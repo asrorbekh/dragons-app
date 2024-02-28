@@ -4,7 +4,12 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import {provideHttpClient} from "@angular/common/http";
 import { provideStore } from '@ngrx/store';
+import {dragonTreasureReducer} from "./store/dragons/dragon-treasure.reducer";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient(), provideStore()]
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(),
+    provideStore({ dragonTreasure: dragonTreasureReducer })
+  ]
 };
