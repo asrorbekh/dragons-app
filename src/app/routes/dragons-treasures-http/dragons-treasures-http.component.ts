@@ -30,14 +30,17 @@ export class DragonsTreasuresHttpComponent implements OnInit {
   loadDragonTreasure() {
     this.isLoading = true;
 
+    console.log('Loading:loadDragonTreasure')
     this.dragonTreasureService.getDragonTreasures().subscribe({
       next: (response: any) => {
         if (response.hasOwnProperty('hydra:member')) {
           this.dragonTreasures = response['hydra:member'] as DragonTreasure[];
           this.totalTreasures = this.dragonTreasures?.length;
+          console.log('Success:loadDragonTreasure')
         } else if (Array.isArray(response)) {
           this.dragonTreasures = response as DragonTreasure[];
           this.totalTreasures = this.dragonTreasures?.length;
+          console.log('Success:loadDragonTreasure')
         } else {
           this.errorMessage = 'Invalid response format';
         }
@@ -46,9 +49,11 @@ export class DragonsTreasuresHttpComponent implements OnInit {
       error: (error) => {
         this.errorMessage = error.statusText || 'An error occurred';
         this.isLoading = false;
+        console.log('Error:loadDragonTreasure')
       },
       complete: () => {
         this.isLoading = false;
+        console.log('Finish:loadDragonTreasure')
       }
     });
   }
