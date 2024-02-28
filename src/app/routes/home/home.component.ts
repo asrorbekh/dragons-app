@@ -1,7 +1,5 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
-import {DragonTreasureService} from "../../services/dragons/dragon-treasure.service";
-import {DragonTreasure} from "../../interfaces/dragons/dragon-treasure";
 import {RouterLink} from "@angular/router";
 
 @Component({
